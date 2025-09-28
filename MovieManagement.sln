@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieManagement.Tests", "MovieManagement.Tests\MovieManagement.Tests.csproj", "{33A58B1D-DB9A-4E65-803E-A0C1758227AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{45714234-B862-403B-ADF4-4B0CAB8DEFDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45714234-B862-403B-ADF4-4B0CAB8DEFDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45714234-B862-403B-ADF4-4B0CAB8DEFDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33A58B1D-DB9A-4E65-803E-A0C1758227AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33A58B1D-DB9A-4E65-803E-A0C1758227AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33A58B1D-DB9A-4E65-803E-A0C1758227AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33A58B1D-DB9A-4E65-803E-A0C1758227AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

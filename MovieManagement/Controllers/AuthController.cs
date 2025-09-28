@@ -1,10 +1,5 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MovieManagement.AppDataContext;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieManagement.DTOs.Requests;
-using MovieManagement.Entities;
-using MovieManagement.Services;
 using MovieManagement.Services.Interfaces;
 
 namespace MovieManagement.Controllers
