@@ -17,7 +17,7 @@ Incluye autenticación con **JWT** y manejo básico de **roles** (`Admin` y `Use
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tu-usuario/MovieManagement.git
+   git clone https://github.com/Yenny-1301/MovieManagement.git
    cd MovieManagement
 2. **Configurar base de datos**
    ```bash 
