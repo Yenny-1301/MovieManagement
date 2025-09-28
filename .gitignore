@@ -1,0 +1,25 @@
+# Build
+bin/
+obj/
+[Ll]og/
+*.log
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# VS Code
+.vscode/
+
+# Database local files
+*.mdf
+*.ldf
+*.dbmdl
+
+# Local Configs
+appsettings.Development.json
+
+# Others
+*.bak
+*.tmp
