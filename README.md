@@ -81,7 +81,6 @@ Incluye autenticación con **JWT** y manejo básico de **roles** (`Admin` y `Use
     ```
     Aquí podrás ver y probar los endpoints de la API. 
     > El puerto puede variar según tu configuración.  
-    > Aquí podrás ver y probar todos los endpoints de la API.
 
 ---
 
