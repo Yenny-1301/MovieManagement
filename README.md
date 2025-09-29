@@ -51,16 +51,14 @@ Incluye autenticación con **JWT** y manejo básico de **roles** (`Admin` y `Use
     }
     ```
 5. **Aplicar migraciones y crear la base de datos**
-    Desde la terminal, en la carpeta del proyecto principal, ejecuta:
+    Desde la terminal de paquetes, ejecuta:
     ```bash
-    dotnet ef database update
+    Add-Migration InitialCreate
     ```
-    Esto creará la base de datos y las tablas según las migraciones definidas.
-    > Si es la primera vez, puedes crear la migración inicial con:
-    > ```bash
-    > dotnet ef migrations add InitialCreate
-    > dotnet ef database update
-    > ```
+    Esto deberia crear una carpeta llamada Migrations. Una vez creada ejecutar para crear las tablas en la base
+   	```bash
+    Update-Database
+    ```
 6. **Configurar JWT**
     En `appsettings.json`, ajusta la sección de JWT:
     ```json
