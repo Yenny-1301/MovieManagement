@@ -9,7 +9,6 @@ Incluye autenticación con **JWT** y manejo básico de **roles** (`Admin` y `Use
 - [.NET 8 SDK](https://dotnet.microsoft.com/download)
 - [Entity Framework Core](https://learn.microsoft.com/ef/core/)
 - [SQL Server](https://www.microsoft.com/es-es/sql-server/)  
-  (o puedes adaptar la cadena de conexión a MySQL si lo prefieres)
 - [Swagger / OpenAPI](https://swagger.io/tools/open-source/open-api/)
 - [AutoMapper](https://automapper.org/)
 - [JWT Bearer Authentication](https://learn.microsoft.com/aspnet/core/security/authentication/jwt)
