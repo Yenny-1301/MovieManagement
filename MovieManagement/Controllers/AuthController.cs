@@ -34,21 +34,14 @@ namespace MovieManagement.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error ocurred while creating the movie item", error = ex.Message });
+                return StatusCode(500, new { message = "An error ocurred while processing the sign in", error = ex.Message });
             }
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            var users = await _usersServices.GetAllAsync();
-
-            var user = users
-                .FirstOrDefault(u =>
-                u.Email == request.Email &&
-                u.Password == _jwtServices.HashPassword(request.Password)
-            );
-
+            var user = await _usersServices.AuthenticateAsync(request.Email, request.Password);
 
             if (user == null)
                 return Unauthorized(new { message = "Invalid credentials" });
@@ -58,6 +51,7 @@ namespace MovieManagement.Controllers
 
             var token = _jwtServices.GenerateToken(user);
             return Ok(new { message = "Token successfully created", token = token });
+
         }
     }
 }

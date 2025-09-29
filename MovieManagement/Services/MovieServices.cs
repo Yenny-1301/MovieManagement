@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieManagement.AppDataContext;
 using MovieManagement.DTOs.Requests;
+using MovieManagement.DTOs.Responses;
 using MovieManagement.Entities;
 using MovieManagement.Services.Interfaces;
 
@@ -53,7 +54,7 @@ namespace MovieManagement.Services
             }
         }
 
-        public async Task<IEnumerable<Movie>> GetAllAsync()
+        public async Task<IEnumerable<MovieResponse>> GetAllAsync()
         {
             var movies = await _context.Movies.ToListAsync();
             if (movies == null)
@@ -61,17 +62,17 @@ namespace MovieManagement.Services
                 throw new Exception("No Movies found");
             }
 
-            return movies;
+            return _mapper.Map<IEnumerable<MovieResponse>>(movies);
         }
 
-        public async Task<Movie> GetByIdAsync(Guid id)
+        public async Task<MovieResponse> GetByIdAsync(Guid id)
         {
             var movie = await _context.Movies.FindAsync(id);
             if (movie == null)
             {
                 throw new KeyNotFoundException($"No movie found with Id {id} found");
             }
-            return movie;
+            return _mapper.Map<MovieResponse>(movie);
         }
 
         public async Task UpdateMovieAsync(Guid id, UpdateMovieRequest request)

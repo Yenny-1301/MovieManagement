@@ -11,6 +11,6 @@ namespace MovieManagement.DTOs.Requests
         [Required]
         public string Password { get; set; }
         [Required]
-        public Guid RoleId { get; set; }
+        public string Role { get; set; }
     }
 }

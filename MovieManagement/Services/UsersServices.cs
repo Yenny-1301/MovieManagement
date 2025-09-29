@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieManagement.AppDataContext;
 using MovieManagement.DTOs.Requests;
+using MovieManagement.DTOs.Responses;
 using MovieManagement.Entities;
 using MovieManagement.Services.Interfaces;
 
@@ -25,15 +26,18 @@ namespace MovieManagement.Services
         {
             try
             {
-                if (await _context.Users.AnyAsync(u => u.Email == request.Email))
-                {
-                    throw new Exception("A user with this email already exists.");
-                }
+                if (!IsValidEmail(request.Email))
+                    throw new ArgumentException("The email format is not valid.");
 
-                if (!await _context.Roles.AnyAsync(r => r.Id == request.RoleId))
-                {
-                    throw new Exception("Invalid role specified.");
-                }
+                if (!IsStrongPassword(request.Password))
+                    throw new ArgumentException("The password must have at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character.");
+
+                if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+                    throw new InvalidOperationException("A user with this email already exists.");
+
+                var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == request.Role);
+                if (role == null)
+                    throw new ArgumentException("Invalid role specified.");
 
                 var user = _mapper.Map<User>(request);
 
@@ -41,8 +45,6 @@ namespace MovieManagement.Services
                 user.CreatedAt = DateTime.UtcNow;
                 user.UpdatedAt = DateTime.UtcNow;
                 user.Password = _jwtServices.HashPassword(request.Password);
-
-                var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == request.RoleId);
                 user.RoleId = role.Id;
 
                 _context.Users.Add(user);
@@ -50,9 +52,8 @@ namespace MovieManagement.Services
             }
             catch (Exception ex)
             {
-                var message = "An error ocurred while creating the User";
-                _logger.LogError(ex, message);
-                throw new Exception(message);
+                _logger.LogError(ex, "Error while creating user");
+                throw;
             }
         }
 
@@ -71,7 +72,7 @@ namespace MovieManagement.Services
 
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<UserResponse>> GetAllAsync()
         {
             var users = await _context.Users.ToListAsync();
 
@@ -80,10 +81,10 @@ namespace MovieManagement.Services
                 throw new Exception("No users found");
             }
 
-            return users;
+            return _mapper.Map<IEnumerable<UserResponse>>(users);
         }
 
-        public async Task<User> GetByIdAsync(Guid id)
+        public async Task<UserResponse> GetByIdAsync(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -92,7 +93,7 @@ namespace MovieManagement.Services
                 throw new KeyNotFoundException($"No user found with id {id}");
             }
 
-            return user;
+            return _mapper.Map<UserResponse>(user);
         }
 
         public async Task UpdateUserAsync(Guid id, UpdateUserRequest request)
@@ -100,42 +101,26 @@ namespace MovieManagement.Services
             try
             {
                 var user = await _context.Users.FindAsync(id);
-
                 if (user == null)
-                {
                     throw new Exception($"User with id {id} not found");
-                }
+
+                if (!IsValidEmail(request.Email))
+                    throw new Exception("The email format is not valid.");
+
+                if (!IsStrongPassword(request.Password))
+                    throw new Exception("The password must have at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character.");
 
                 if (await _context.Users.AnyAsync(u => u.Email == request.Email))
-                {
                     throw new Exception("A user with this email already exists.");
-                }
 
                 if (!await _context.Roles.AnyAsync(r => r.Id == request.RoleId))
-                {
                     throw new Exception("Invalid role specified.");
-                }
 
-
-                if (request.Name != null)
-                {
-                    user.Name = request.Name;
-                }
-                if (request.Email != null)
-                {
-                    user.Email = request.Email;
-                }
-                if (request.Password != null)
-                {
-                    user.Password =  request.Password;
-                }
-
-                var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == request.RoleId);
-                user.RoleId = role.Id;
-                user.Role = role;
-
-                user.UpdatedAt = DateTime.Now;
+                user.Name = request.Name;
+                user.Email = request.Email;
+                user.Password = _jwtServices.HashPassword(request.Password);
                 user.RoleId = request.RoleId;
+                user.UpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
             }
@@ -145,6 +130,34 @@ namespace MovieManagement.Services
                 _logger.LogError(ex, message);
                 throw;
             }
+        }
+        private bool IsValidEmail(string email)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(
+                email,
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+            );
+        }
+
+        private bool IsStrongPassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+                return false;
+
+            bool hasUpper = password.Any(char.IsUpper);
+            bool hasLower = password.Any(char.IsLower);
+            bool hasDigit = password.Any(char.IsDigit);
+            bool hasSpecial = password.Any(ch => !char.IsLetterOrDigit(ch));
+
+            return hasUpper && hasLower && hasDigit && hasSpecial;
+        }
+
+        public async Task<User?> AuthenticateAsync(string email, string password)
+        {
+            var hashedPassword = _jwtServices.HashPassword(password);
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email && u.Password == hashedPassword);
         }
     }
 }
